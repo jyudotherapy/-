@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#f7f3ea">
+<title>英単語帳 20語</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Yu Gothic",sans-serif;
+  background:#e9e1d2;
+  color:#2b2926;
+  display:flex;align-items:center;justify-content:center;
+}
+.app{width:100%;max-width:520px;height:100%;display:flex;flex-direction:column}
+.header{height:70px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px}
+.progress{font-variant-numeric:tabular-nums}
+.book{
+  position:relative;flex:1;min-height:0;padding:12px 18px 24px;
+  perspective:1400px;
+}
+.card{
+  position:absolute;inset:12px 18px 24px;
+  background:#fffdf7;
+  border-radius:4px;
+  box-shadow:0 7px 22px rgba(60,45,25,.18), inset 0 0 0 1px rgba(80,60,30,.06);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  touch-action:none;user-select:none;
+  transform-origin:left center;
+  overflow:hidden;
+}
+.card:after{content:"";position:absolute;left:0;right:0;top:0;height:8px;background:rgba(220,210,190,.25)}
+.word{font-size:clamp(38px,11vw,58px);font-weight:700;letter-spacing:.02em}
+.answer{
+  margin-top:30px;font-size:clamp(22px,6vw,30px);font-weight:600;
+  min-height:38px;visibility:hidden;
+}
+.card.show .answer{visibility:visible}
+.hint{position:absolute;bottom:28px;font-size:13px;color:#8a8378}
+.nav{height:88px;display:flex;align-items:center;justify-content:center;gap:16px}
+button{
+  border:0;background:#fffdf7;color:#302d29;border-radius:999px;
+  box-shadow:0 3px 12px rgba(60,45,25,.14);font-size:15px;font-weight:700;
+}
+.nav button{width:120px;height:48px}
+.nav button:disabled{opacity:.35}
+.answerBtn{position:absolute;bottom:92px;z-index:5;width:150px;height:44px;background:#2f2c28;color:white}
+.done{display:none;position:absolute;inset:12px 18px 24px;background:#fffdf7;align-items:center;justify-content:center;flex-direction:column;border-radius:4px;box-shadow:0 7px 22px rgba(60,45,25,.18)}
+.done h2{margin:0 0 12px;font-size:28px}.done p{margin:0 0 24px;color:#777}
+.done button{width:150px;height:46px}
+.note{text-align:center;font-size:12px;color:#777;margin-top:-3px;padding-bottom:4px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header"><div class="progress" id="progress">1 / 20</div></div>
+  <main class="book" id="book">
+    <div class="card" id="card">
+      <div class="word" id="word"></div>
+      <div class="answer" id="answer"></div>
+      <div class="hint">タップで答えを見る　・　左右にスワイプ</div>
+    </div>
+    <button class="answerBtn" id="answerBtn">答えを見る</button>
+    <div class="done" id="done">
+      <h2>20語 完了！</h2><p>単語帳をもう一度めくれます。</p>
+      <button id="restart">最初から</button>
+    </div>
+  </main>
+  <div class="nav">
+    <button id="prev">← 前へ</button>
+    <button id="next">次へ →</button>
+  </div>
+  <div class="note">紙の単語帳のように左右へスライドできます</div>
+</div>
+<script>
+const words=[
+["apple","りんご"],["book","本"],["cat","猫"],["dog","犬"],["egg","卵"],
+["fish","魚"],["girl","女の子"],["house","家"],["ice","氷"],["juice","ジュース"],
+["king","王"],["love","愛"],["moon","月"],["name","名前"],["orange","オレンジ"],
+["pen","ペン"],["queen","女王"],["rain","雨"],["school","学校"],["water","水"]
+];
+let i=0, dragging=false,startX=0,startY=0,moved=false;
+const card=document.getElementById("card"), word=document.getElementById("word"), answer=document.getElementById("answer");
+const progress=document.getElementById("progress"), done=document.getElementById("done");
+function render(){
+  word.textContent=words[i][0]; answer.textContent=words[i][1]; card.classList.remove("show");
+  progress.textContent=`${i+1} / ${words.length}`;
+  document.getElementById("prev").disabled=i===0;
+  document.getElementById("next").disabled=i===words.length-1;
+}
+function showAnswer(){card.classList.toggle("show")}
+function go(n){
+  if(n<0||n>=words.length)return;
+  i=n; card.style.transition="none"; card.style.transform="translateX(0) rotateY(0)";
+  render();
+}
+function turn(dir){
+  if((dir>0&&i===words.length-1)||(dir<0&&i===0))return;
+  const rot=dir>0?-18:18, x=dir>0?-70:70;
+  card.style.transition="transform .18s ease";
+  card.style.transform=`translateX(${x}px) rotateY(${rot}deg)`;
+  setTimeout(()=>{i+=dir; render();},170);
+}
+card.addEventListener("pointerdown",e=>{
+  dragging=true;moved=false;startX=e.clientX;startY=e.clientY;card.setPointerCapture(e.pointerId);
+});
+card.addEventListener("pointermove",e=>{
+  if(!dragging)return;
+  const dx=e.clientX-startX, dy=e.clientY-startY;
+  if(Math.abs(dx)>8)moved=true;
+  if(Math.abs(dx)>Math.abs(dy)){card.style.transition="none";card.style.transform=`translateX(${dx*.18}px) rotateY(${-dx*.04}deg)`;}
+});
+card.addEventListener("pointerup",e=>{
+  if(!dragging)return; dragging=false;
+  const dx=e.clientX-startX;
+  card.style.transition="transform .18s ease";
+  if(Math.abs(dx)>60) turn(dx<0?1:-1);
+  else {card.style.transform="translateX(0) rotateY(0)"; if(!moved)showAnswer();}
+});
+document.getElementById("answerBtn").onclick=showAnswer;
+document.getElementById("prev").onclick=()=>go(i-1);
+document.getElementById("next").onclick=()=>go(i+1);
+document.getElementById("restart").onclick=()=>{done.style.display="none";go(0)};
+render();
+</script>
+</body>
+</html>

@@ -1,208 +1,46 @@
-<!doctype html>
-<html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#f7f3ea">
-<title>やさしい英単語帳</title>
+<!doctype html><html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>やさしい英単語帳 Sランク100語</title>
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;overflow:hidden}
-body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Yu Gothic",sans-serif;background:#e9e1d2;color:#2b2926;display:flex;align-items:center;justify-content:center}
-.app{width:100%;max-width:520px;height:100%;display:flex;flex-direction:column}
-.header{height:70px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;position:relative}
-.progress{font-variant-numeric:tabular-nums}
-.settingsBtn{position:absolute;right:16px;top:15px;width:42px;height:42px;font-size:20px;background:#fffdf7}
-.book{position:relative;flex:1;min-height:0;padding:12px 18px 24px;perspective:1400px}
-.card{position:absolute;inset:12px 18px 24px;background:#fffdf7;border-radius:4px;box-shadow:0 7px 22px rgba(60,45,25,.18),inset 0 0 0 1px rgba(80,60,30,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none;user-select:none;transform-origin:left center;overflow:hidden}
-.card:after{content:"";position:absolute;left:0;right:0;top:0;height:8px;background:rgba(220,210,190,.25)}
-.word{font-size:clamp(38px,11vw,58px);font-weight:700;letter-spacing:.02em}
-.answer{margin-top:30px;font-size:clamp(22px,6vw,30px);font-weight:600;min-height:38px;visibility:hidden}
-.card.show .answer{visibility:visible}
-.hint{position:absolute;bottom:28px;font-size:13px;color:#8a8378}
-.actionArea{position:absolute;bottom:86px;z-index:5;display:flex;gap:8px;justify-content:center}
-.answerBtn,.learnBtn{height:44px;padding:0 20px;background:#2f2c28;color:white;border-radius:999px}
-.learnBtn{display:none;background:#fffdf7;color:#302d29}
-.learnBtn.active{display:block}
-.nav{height:88px;display:flex;align-items:center;justify-content:center;gap:16px}
-button{border:0;background:#fffdf7;color:#302d29;border-radius:999px;box-shadow:0 3px 12px rgba(60,45,25,.14);font-size:15px;font-weight:700}
-.nav button{width:120px;height:48px}
-.nav button:disabled{opacity:.35}
-.done{display:none;position:absolute;inset:12px 18px 24px;background:#fffdf7;align-items:center;justify-content:center;flex-direction:column;border-radius:4px;box-shadow:0 7px 22px rgba(60,45,25,.18);z-index:10}
-.done h2{margin:0 0 12px;font-size:28px}.done p{margin:0 0 24px;color:#777;text-align:center;line-height:1.7}
-.done button{width:150px;height:46px}
-.note{text-align:center;font-size:12px;color:#777;margin-top:-3px;padding-bottom:4px}
-.settings{display:none;position:absolute;inset:0;background:rgba(30,27,23,.25);z-index:20;align-items:flex-end}
-.panel{width:100%;max-width:520px;background:#fffdf7;border-radius:20px 20px 0 0;padding:22px 22px 28px;box-shadow:0 -8px 30px rgba(40,30,20,.18)}
-.panel h2{font-size:20px;margin:0 0 18px}
-.settingRow{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-top:1px solid #eee6d9}
-.settingRow span{font-size:15px;font-weight:600}
-.switch{width:54px;height:32px;border-radius:20px;background:#cfc8bc;position:relative;box-shadow:none}
-.switch:after{content:"";position:absolute;width:26px;height:26px;top:3px;left:3px;border-radius:50%;background:white;transition:.18s}
-.switch.on{background:#55514b}
-.switch.on:after{left:25px}
-.closeSettings{width:100%;height:46px;margin-top:10px}
-.scoreMini{display:none;position:absolute;top:52px;font-size:12px;color:#777}
-</style>
-
-<style>
-body{background:#eef6fb;color:#243447}
-.card,.done,.panel,.settingsBtn,.nav button{background:#fff}
-.card{box-shadow:0 7px 22px rgba(40,80,110,.14),inset 0 0 0 1px rgba(40,80,110,.06)}
-.card:after{background:rgba(74,144,226,.10)}
-.word{color:#243447}
-.answerBtn{background:#4a90e2;color:#fff}
-.learnBtn{background:#55b97a;color:#fff}
-.nav button{color:#2f4356;box-shadow:0 3px 12px rgba(40,80,110,.12)}
-.settingsBtn{color:#2f4356;box-shadow:0 3px 12px rgba(40,80,110,.12)}
-.done{box-shadow:0 7px 22px rgba(40,80,110,.14)}
-.done button,.closeSettings{background:#4a90e2;color:#fff}
-.hint,.note,.done p,.scoreMini{color:#718096}
-.settings{background:rgba(30,55,75,.24)}
-.panel{box-shadow:0 -8px 30px rgba(40,80,110,.14)}
-.settingRow{border-top-color:#e5edf4}
-.switch.on{background:#55b97a}
-.progress{color:#2f4356}
-</style>
-</head>
-<body>
-<div class="app">
-  <div class="header">
-    <div class="progress" id="progress">1 / 20</div>
-    <button class="settingsBtn" id="settingsBtn" aria-label="設定">⚙️</button>
-  </div>
-  <main class="book" id="book">
-    <div class="card" id="card">
-      <div class="word" id="word"></div>
-      <div class="answer" id="answer"></div>
-      <div class="hint">タップで答えを見る　・　左右にスワイプ</div>
-    </div>
-    <div class="actionArea">
-      <button class="answerBtn" id="answerBtn">答えを見る</button>
-      <button class="learnBtn" id="learnBtn">覚えた</button>
-    </div>
-    <div class="done" id="done">
-      <h2>20語 完了！</h2>
-      <p id="doneMessage">今日も20語できました。<br>よくできました！</p>
-      <button id="restart">最初から</button>
-    </div>
-  </main>
-  <div class="nav">
-    <button id="prev">← 前へ</button>
-    <button id="next">次へ →</button>
-  </div>
-  <div class="note">紙の単語帳のように左右へスライドできます</div>
-</div>
-
-<div class="settings" id="settings">
-  <div class="panel">
-    <h2>設定</h2>
-    <div class="settingRow">
-      <span>「覚えた」ボタン</span>
-      <button class="switch" id="learnSwitch" aria-label="覚えたボタン"></button>
-    </div>
-    <div class="settingRow">
-      <span>正解率・点数を表示</span>
-      <button class="switch" id="scoreSwitch" aria-label="正解率・点数"></button>
-    </div>
-    <button class="closeSettings" id="closeSettings">閉じる</button>
-  </div>
-</div>
-
+*{box-sizing:border-box}body{margin:0;background:#eef6fb;color:#18324a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{height:58px;background:#fff;border-bottom:1px solid #dbe7ef;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+h1{font-size:18px;margin:0}.icon{border:0;background:none;font-size:22px}
+main{max-width:560px;margin:auto;padding:18px 16px}.progress{text-align:center;color:#668096;font-size:14px;margin-bottom:10px}
+.card{background:#fff;border-radius:22px;min-height:310px;padding:35px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 5px 18px #00000012;touch-action:pan-y;user-select:none}
+.rank{font-size:13px;color:#4a90e2;margin-bottom:18px}.word{font-size:42px;font-weight:700}.answer{font-size:24px;color:#2d638f;margin-top:22px;min-height:34px}
+.hint{font-size:13px;color:#8297a8;margin-top:24px}.actions{display:flex;gap:10px;margin-top:16px}
+.actions button,.nav button,.sets button{border:0;border-radius:12px;padding:10px 16px;cursor:pointer}
+.answerBtn{background:#4a90e2;color:#fff}.learnBtn{background:#55b97a;color:#fff}.learnBtn.off{background:#e7eef3;color:#587083}
+.nav{display:flex;justify-content:space-between;margin-top:15px}.nav button{background:#fff;border:1px solid #d8e4ec;color:#23465e}
+.sets{display:flex;gap:7px;justify-content:center;margin-top:14px;flex-wrap:wrap}.sets button{background:#fff;border:1px solid #d8e4ec;color:#486579}
+.sets .active{background:#4a90e2;color:#fff;border-color:#4a90e2}.panel,.complete{background:#fff;border-radius:18px;padding:20px;margin-top:15px}
+.panel{display:none}.panel.show{display:block}.complete{display:none;text-align:center}.complete.show{display:block}
+.row{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid #edf1f4}
+.switch{width:48px;height:28px;border:0;border-radius:20px;background:#cbd7df;position:relative}.switch:after{content:"";position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.2s}.switch.on{background:#55b97a}.switch.on:after{left:23px}
+.small{font-size:13px;color:#7890a0}
+</style></head><body>
+<header><h1>やさしい英単語帳</h1><button class="icon" id="settingsBtn">⚙️</button></header>
+<main><div id="study">
+<div class="progress" id="progress"></div><div class="card" id="card"><div class="rank" id="rank"></div><div class="word" id="word"></div><div class="answer" id="answer"></div><div class="hint">タップで日本語を表示</div></div>
+<div class="actions"><button class="answerBtn" id="answerBtn">日本語を見る</button><button class="learnBtn" id="learnBtn">覚えた</button></div>
+<div class="nav"><button id="prev">← 前へ</button><button id="next">次へ →</button></div><div class="sets" id="sets"></div></div>
+<div class="complete" id="complete"><h2>よくできました！</h2><p>このセットは終了です。</p><p id="result"></p><button class="answerBtn" id="again">もう一度</button></div>
+<div class="panel" id="settings"><h3>設定</h3><div class="row"><span>「覚えた」ボタン</span><button class="switch" id="learnSwitch"></button></div><div class="row"><span>正解率・点数を表示</span><button class="switch" id="scoreSwitch"></button></div><p class="small">設定はこの端末に保存されます。</p></div>
+</main>
 <script>
-const words=[
-["apple","りんご"],["book","本"],["cat","猫"],["dog","犬"],["egg","卵"],
-["fish","魚"],["girl","女の子"],["house","家"],["ice","氷"],["juice","ジュース"],
-["king","王"],["love","愛"],["moon","月"],["name","名前"],["orange","オレンジ"],
-["pen","ペン"],["queen","女王"],["rain","雨"],["school","学校"],["water","水"]
-];
-
-let i=0,dragging=false,startX=0,startY=0,moved=false;
-let learned=JSON.parse(localStorage.getItem("easyVocabLearned")||"{}");
-let showLearn=localStorage.getItem("easyVocabShowLearn")!=="false";
-let showScore=localStorage.getItem("easyVocabShowScore")==="true";
-
-const card=document.getElementById("card"),word=document.getElementById("word"),answer=document.getElementById("answer");
-const progress=document.getElementById("progress"),done=document.getElementById("done");
-const learnBtn=document.getElementById("learnBtn"),doneMessage=document.getElementById("doneMessage");
-
-function render(){
-  word.textContent=words[i][0]; answer.textContent=words[i][1]; card.classList.remove("show");
-  progress.textContent=`${i+1} / ${words.length}`;
-  document.getElementById("prev").disabled=i===0;
-  document.getElementById("next").disabled=i===words.length-1;
-  learnBtn.classList.toggle("active",showLearn);
-  learnBtn.textContent=learned[i] ? "✓ 覚えた" : "覚えた";
-}
-
-function showAnswer(){card.classList.toggle("show")}
-
-function go(n){
-  if(n<0||n>=words.length)return;
-  i=n;card.style.transition="none";card.style.transform="translateX(0) rotateY(0)";
-  render();
-}
-
-function finish(){
-  let count=Object.values(learned).filter(Boolean).length;
-  doneMessage.innerHTML=showScore
-    ? `${words.length}語できました！<br><strong>${count} / ${words.length}語</strong> 覚えた<br><br>今日もよく頑張りました。`
-    : `今日も${words.length}語できました。<br>よくできました！`;
-  done.style.display="flex";
-}
-
-function turn(dir){
-  if(dir>0 && i===words.length-1){finish();return}
-  if(dir<0 && i===0)return;
-  const rot=dir>0?-18:18,x=dir>0?-70:70;
-  card.style.transition="transform .18s ease";
-  card.style.transform=`translateX(${x}px) rotateY(${rot}deg)`;
-  setTimeout(()=>{i+=dir;render();},170);
-}
-
-card.addEventListener("pointerdown",e=>{
-  dragging=true;moved=false;startX=e.clientX;startY=e.clientY;card.setPointerCapture(e.pointerId);
-});
-card.addEventListener("pointermove",e=>{
-  if(!dragging)return;
-  const dx=e.clientX-startX,dy=e.clientY-startY;
-  if(Math.abs(dx)>8)moved=true;
-  if(Math.abs(dx)>Math.abs(dy)){card.style.transition="none";card.style.transform=`translateX(${dx*.18}px) rotateY(${-dx*.04}deg)`}
-});
-card.addEventListener("pointerup",e=>{
-  if(!dragging)return;dragging=false;
-  const dx=e.clientX-startX;card.style.transition="transform .18s ease";
-  if(Math.abs(dx)>60)turn(dx<0?1:-1);
-  else{card.style.transform="translateX(0) rotateY(0)";if(!moved)showAnswer()}
-});
-
-document.getElementById("answerBtn").onclick=showAnswer;
-learnBtn.onclick=()=>{
-  learned[i]=!learned[i];
-  localStorage.setItem("easyVocabLearned",JSON.stringify(learned));
-  render();
-};
-document.getElementById("prev").onclick=()=>go(i-1);
-document.getElementById("next").onclick=()=>go(i+1);
-document.getElementById("restart").onclick=()=>{done.style.display="none";go(0)};
-
-const settings=document.getElementById("settings"),learnSwitch=document.getElementById("learnSwitch"),scoreSwitch=document.getElementById("scoreSwitch");
-function updateSwitches(){
-  learnSwitch.classList.toggle("on",showLearn);
-  scoreSwitch.classList.toggle("on",showScore);
-}
-document.getElementById("settingsBtn").onclick=()=>{settings.style.display="flex";updateSwitches()};
-document.getElementById("closeSettings").onclick=()=>settings.style.display="none";
-settings.addEventListener("click",e=>{if(e.target===settings)settings.style.display="none"});
-learnSwitch.onclick=()=>{
-  showLearn=!showLearn;localStorage.setItem("easyVocabShowLearn",showLearn);updateSwitches();render();
-};
-scoreSwitch.onclick=()=>{
-  showScore=!showScore;localStorage.setItem("easyVocabShowScore",showScore);updateSwitches();
-};
-
-render();
-updateSwitches();
-</script>
-</body>
-</html>
+const sets=[[['I','私'],['you','あなた・あなたたち'],['he','彼'],['she','彼女'],['it','それ'],['we','私たち'],['they','彼ら・彼女ら'],['my','私の'],['your','あなたの'],['his','彼の'],['her','彼女の'],['this','これ・この'],['that','あれ・その'],['what','何・何の'],['who','誰'],['where','どこ'],['when','いつ'],['how','どのように・どう'],['am','〜です・いる'],['is','〜です・いる'],['are','〜です・いる'],['have','持っている'],['like','好き'],['go','行く'],['come','来る']],[['do','する'],['does','する'],['can','〜できる'],['want','欲しい・〜したい'],['know','知っている'],['see','見る・会う'],['look','見る'],['watch','見る'],['make','作る'],['use','使う'],['get','得る・手に入れる'],['give','与える'],['take','取る・持っていく'],['say','言う'],['tell','伝える'],['speak','話す'],['talk','話す'],['read','読む'],['write','書く'],['listen','聞く'],['hear','聞こえる'],['eat','食べる'],['drink','飲む'],['play','遊ぶ・する'],['study','勉強する']],[['learn','学ぶ'],['live','住む・生きる'],['work','働く・仕事をする'],['help','助ける'],['need','必要とする'],['love','大好き・愛する'],['open','開ける'],['close','閉める'],['put','置く'],['bring','持ってくる'],['buy','買う'],['find','見つける'],['show','見せる'],['ask','尋ねる'],['meet','会う'],['start','始める'],['stop','止める'],['try','試す'],['understand','理解する'],['think','考える・思う'],['feel','感じる'],['good','良い'],['nice','すてきな・よい'],['big','大きい'],['small','小さい']],[['new','新しい'],['old','古い・年を取った'],['young','若い'],['happy','幸せな・うれしい'],['easy','簡単な'],['hard','難しい・一生懸命に'],['hot','暑い・熱い'],['cold','寒い・冷たい'],['many','たくさんの'],['much','たくさんの'],['very','とても'],['really','本当に'],['always','いつも'],['often','よく'],['and','そして・〜と'],['but','しかし'],['or','または'],['because','なぜなら・〜なので'],['not','〜ではない'],['to','〜へ・〜するために'],['from','〜から'],['in','〜の中に・〜で'],['on','〜の上に・〜に'],['at','〜で・〜に'],['with','〜と一緒に']]];
+let si=0,wi=0,revealed=false;
+let showLearn=localStorage.getItem("showLearn")!=="false";
+let showScore=localStorage.getItem("showScore")==="true";
+let learned=JSON.parse(localStorage.getItem("learned")||"{}");
+const $=x=>document.getElementById(x), key=()=>si+"-"+wi;
+function render(){let x=sets[si][wi];$("progress").textContent=`Sランク セット${si+1}　${wi+1} / 25`;$("rank").textContent=`Sランク ${si*25+wi+1} / 100`;$("word").textContent=x[0];$("answer").textContent=revealed?x[1]:"";$("answerBtn").textContent=revealed?"日本語を隠す":"日本語を見る";$("learnBtn").style.display=showLearn?"inline-block":"none";$("learnBtn").textContent=learned[key()]?"✓ 覚えた":"覚えた";$("learnBtn").className="learnBtn"+(learned[key()]?"":" off");$("sets").innerHTML=sets.map((_,i)=>`<button class="${i===si?'active':''}" onclick="changeSet(${i})">セット${i+1}</button>`).join("");}
+function changeSet(i){si=i;wi=0;revealed=false;$("complete").classList.remove("show");$("study").style.display="block";render()}
+$("answerBtn").onclick=()=>{revealed=!revealed;render()};$("learnBtn").onclick=()=>{learned[key()]=!learned[key()];localStorage.setItem("learned",JSON.stringify(learned));render()};
+$("prev").onclick=()=>{if(wi>0){wi--;revealed=false;render()}};$("next").onclick=()=>{if(wi<24){wi++;revealed=false;render()}else{$("study").style.display="none";$("complete").classList.add("show");let n=sets[si].filter((_,i)=>learned[si+"-"+i]).length;$("result").textContent=showScore?n+" / 25語 覚えた":"おつかれさまでした。"}};
+$("again").onclick=()=>changeSet(si);$("settingsBtn").onclick=()=>{$("settings").classList.toggle("show")};
+function sw(){ $("learnSwitch").className="switch"+(showLearn?" on":"");$("scoreSwitch").className="switch"+(showScore?" on":"")}
+$("learnSwitch").onclick=()=>{showLearn=!showLearn;localStorage.setItem("showLearn",showLearn);sw();render()};$("scoreSwitch").onclick=()=>{showScore=!showScore;localStorage.setItem("showScore",showScore);sw()};
+let sx=0;$("card").ontouchstart=e=>sx=e.changedTouches[0].screenX;$("card").ontouchend=e=>{let d=e.changedTouches[0].screenX-sx;if(Math.abs(d)>60)(d<0?$("next"):$("prev")).click();else{$("answerBtn").click()}};
+sw();render();
+</script></body></html>

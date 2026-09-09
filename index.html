@@ -4,67 +4,86 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#f7f3ea">
-<title>英単語帳 20語</title>
+<title>やさしい英単語帳</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;overflow:hidden}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Yu Gothic",sans-serif;
-  background:#e9e1d2;
-  color:#2b2926;
-  display:flex;align-items:center;justify-content:center;
-}
+body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Yu Gothic",sans-serif;background:#e9e1d2;color:#2b2926;display:flex;align-items:center;justify-content:center}
 .app{width:100%;max-width:520px;height:100%;display:flex;flex-direction:column}
-.header{height:70px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px}
+.header{height:70px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;position:relative}
 .progress{font-variant-numeric:tabular-nums}
-.book{
-  position:relative;flex:1;min-height:0;padding:12px 18px 24px;
-  perspective:1400px;
-}
-.card{
-  position:absolute;inset:12px 18px 24px;
-  background:#fffdf7;
-  border-radius:4px;
-  box-shadow:0 7px 22px rgba(60,45,25,.18), inset 0 0 0 1px rgba(80,60,30,.06);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  touch-action:none;user-select:none;
-  transform-origin:left center;
-  overflow:hidden;
-}
+.settingsBtn{position:absolute;right:16px;top:15px;width:42px;height:42px;font-size:20px;background:#fffdf7}
+.book{position:relative;flex:1;min-height:0;padding:12px 18px 24px;perspective:1400px}
+.card{position:absolute;inset:12px 18px 24px;background:#fffdf7;border-radius:4px;box-shadow:0 7px 22px rgba(60,45,25,.18),inset 0 0 0 1px rgba(80,60,30,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none;user-select:none;transform-origin:left center;overflow:hidden}
 .card:after{content:"";position:absolute;left:0;right:0;top:0;height:8px;background:rgba(220,210,190,.25)}
 .word{font-size:clamp(38px,11vw,58px);font-weight:700;letter-spacing:.02em}
-.answer{
-  margin-top:30px;font-size:clamp(22px,6vw,30px);font-weight:600;
-  min-height:38px;visibility:hidden;
-}
+.answer{margin-top:30px;font-size:clamp(22px,6vw,30px);font-weight:600;min-height:38px;visibility:hidden}
 .card.show .answer{visibility:visible}
 .hint{position:absolute;bottom:28px;font-size:13px;color:#8a8378}
+.actionArea{position:absolute;bottom:86px;z-index:5;display:flex;gap:8px;justify-content:center}
+.answerBtn,.learnBtn{height:44px;padding:0 20px;background:#2f2c28;color:white;border-radius:999px}
+.learnBtn{display:none;background:#fffdf7;color:#302d29}
+.learnBtn.active{display:block}
 .nav{height:88px;display:flex;align-items:center;justify-content:center;gap:16px}
-button{
-  border:0;background:#fffdf7;color:#302d29;border-radius:999px;
-  box-shadow:0 3px 12px rgba(60,45,25,.14);font-size:15px;font-weight:700;
-}
+button{border:0;background:#fffdf7;color:#302d29;border-radius:999px;box-shadow:0 3px 12px rgba(60,45,25,.14);font-size:15px;font-weight:700}
 .nav button{width:120px;height:48px}
 .nav button:disabled{opacity:.35}
-.answerBtn{position:absolute;bottom:92px;z-index:5;width:150px;height:44px;background:#2f2c28;color:white}
-.done{display:none;position:absolute;inset:12px 18px 24px;background:#fffdf7;align-items:center;justify-content:center;flex-direction:column;border-radius:4px;box-shadow:0 7px 22px rgba(60,45,25,.18)}
-.done h2{margin:0 0 12px;font-size:28px}.done p{margin:0 0 24px;color:#777}
+.done{display:none;position:absolute;inset:12px 18px 24px;background:#fffdf7;align-items:center;justify-content:center;flex-direction:column;border-radius:4px;box-shadow:0 7px 22px rgba(60,45,25,.18);z-index:10}
+.done h2{margin:0 0 12px;font-size:28px}.done p{margin:0 0 24px;color:#777;text-align:center;line-height:1.7}
 .done button{width:150px;height:46px}
 .note{text-align:center;font-size:12px;color:#777;margin-top:-3px;padding-bottom:4px}
+.settings{display:none;position:absolute;inset:0;background:rgba(30,27,23,.25);z-index:20;align-items:flex-end}
+.panel{width:100%;max-width:520px;background:#fffdf7;border-radius:20px 20px 0 0;padding:22px 22px 28px;box-shadow:0 -8px 30px rgba(40,30,20,.18)}
+.panel h2{font-size:20px;margin:0 0 18px}
+.settingRow{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-top:1px solid #eee6d9}
+.settingRow span{font-size:15px;font-weight:600}
+.switch{width:54px;height:32px;border-radius:20px;background:#cfc8bc;position:relative;box-shadow:none}
+.switch:after{content:"";position:absolute;width:26px;height:26px;top:3px;left:3px;border-radius:50%;background:white;transition:.18s}
+.switch.on{background:#55514b}
+.switch.on:after{left:25px}
+.closeSettings{width:100%;height:46px;margin-top:10px}
+.scoreMini{display:none;position:absolute;top:52px;font-size:12px;color:#777}
+</style>
+
+<style>
+body{background:#eef6fb;color:#243447}
+.card,.done,.panel,.settingsBtn,.nav button{background:#fff}
+.card{box-shadow:0 7px 22px rgba(40,80,110,.14),inset 0 0 0 1px rgba(40,80,110,.06)}
+.card:after{background:rgba(74,144,226,.10)}
+.word{color:#243447}
+.answerBtn{background:#4a90e2;color:#fff}
+.learnBtn{background:#55b97a;color:#fff}
+.nav button{color:#2f4356;box-shadow:0 3px 12px rgba(40,80,110,.12)}
+.settingsBtn{color:#2f4356;box-shadow:0 3px 12px rgba(40,80,110,.12)}
+.done{box-shadow:0 7px 22px rgba(40,80,110,.14)}
+.done button,.closeSettings{background:#4a90e2;color:#fff}
+.hint,.note,.done p,.scoreMini{color:#718096}
+.settings{background:rgba(30,55,75,.24)}
+.panel{box-shadow:0 -8px 30px rgba(40,80,110,.14)}
+.settingRow{border-top-color:#e5edf4}
+.switch.on{background:#55b97a}
+.progress{color:#2f4356}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="header"><div class="progress" id="progress">1 / 20</div></div>
+  <div class="header">
+    <div class="progress" id="progress">1 / 20</div>
+    <button class="settingsBtn" id="settingsBtn" aria-label="設定">⚙️</button>
+  </div>
   <main class="book" id="book">
     <div class="card" id="card">
       <div class="word" id="word"></div>
       <div class="answer" id="answer"></div>
       <div class="hint">タップで答えを見る　・　左右にスワイプ</div>
     </div>
-    <button class="answerBtn" id="answerBtn">答えを見る</button>
+    <div class="actionArea">
+      <button class="answerBtn" id="answerBtn">答えを見る</button>
+      <button class="learnBtn" id="learnBtn">覚えた</button>
+    </div>
     <div class="done" id="done">
-      <h2>20語 完了！</h2><p>単語帳をもう一度めくれます。</p>
+      <h2>20語 完了！</h2>
+      <p id="doneMessage">今日も20語できました。<br>よくできました！</p>
       <button id="restart">最初から</button>
     </div>
   </main>
@@ -74,6 +93,22 @@ button{
   </div>
   <div class="note">紙の単語帳のように左右へスライドできます</div>
 </div>
+
+<div class="settings" id="settings">
+  <div class="panel">
+    <h2>設定</h2>
+    <div class="settingRow">
+      <span>「覚えた」ボタン</span>
+      <button class="switch" id="learnSwitch" aria-label="覚えたボタン"></button>
+    </div>
+    <div class="settingRow">
+      <span>正解率・点数を表示</span>
+      <button class="switch" id="scoreSwitch" aria-label="正解率・点数"></button>
+    </div>
+    <button class="closeSettings" id="closeSettings">閉じる</button>
+  </div>
+</div>
+
 <script>
 const words=[
 ["apple","りんご"],["book","本"],["cat","猫"],["dog","犬"],["egg","卵"],
@@ -81,49 +116,93 @@ const words=[
 ["king","王"],["love","愛"],["moon","月"],["name","名前"],["orange","オレンジ"],
 ["pen","ペン"],["queen","女王"],["rain","雨"],["school","学校"],["water","水"]
 ];
-let i=0, dragging=false,startX=0,startY=0,moved=false;
-const card=document.getElementById("card"), word=document.getElementById("word"), answer=document.getElementById("answer");
-const progress=document.getElementById("progress"), done=document.getElementById("done");
+
+let i=0,dragging=false,startX=0,startY=0,moved=false;
+let learned=JSON.parse(localStorage.getItem("easyVocabLearned")||"{}");
+let showLearn=localStorage.getItem("easyVocabShowLearn")!=="false";
+let showScore=localStorage.getItem("easyVocabShowScore")==="true";
+
+const card=document.getElementById("card"),word=document.getElementById("word"),answer=document.getElementById("answer");
+const progress=document.getElementById("progress"),done=document.getElementById("done");
+const learnBtn=document.getElementById("learnBtn"),doneMessage=document.getElementById("doneMessage");
+
 function render(){
   word.textContent=words[i][0]; answer.textContent=words[i][1]; card.classList.remove("show");
   progress.textContent=`${i+1} / ${words.length}`;
   document.getElementById("prev").disabled=i===0;
   document.getElementById("next").disabled=i===words.length-1;
+  learnBtn.classList.toggle("active",showLearn);
+  learnBtn.textContent=learned[i] ? "✓ 覚えた" : "覚えた";
 }
+
 function showAnswer(){card.classList.toggle("show")}
+
 function go(n){
   if(n<0||n>=words.length)return;
-  i=n; card.style.transition="none"; card.style.transform="translateX(0) rotateY(0)";
+  i=n;card.style.transition="none";card.style.transform="translateX(0) rotateY(0)";
   render();
 }
+
+function finish(){
+  let count=Object.values(learned).filter(Boolean).length;
+  doneMessage.innerHTML=showScore
+    ? `${words.length}語できました！<br><strong>${count} / ${words.length}語</strong> 覚えた<br><br>今日もよく頑張りました。`
+    : `今日も${words.length}語できました。<br>よくできました！`;
+  done.style.display="flex";
+}
+
 function turn(dir){
-  if((dir>0&&i===words.length-1)||(dir<0&&i===0))return;
-  const rot=dir>0?-18:18, x=dir>0?-70:70;
+  if(dir>0 && i===words.length-1){finish();return}
+  if(dir<0 && i===0)return;
+  const rot=dir>0?-18:18,x=dir>0?-70:70;
   card.style.transition="transform .18s ease";
   card.style.transform=`translateX(${x}px) rotateY(${rot}deg)`;
-  setTimeout(()=>{i+=dir; render();},170);
+  setTimeout(()=>{i+=dir;render();},170);
 }
+
 card.addEventListener("pointerdown",e=>{
   dragging=true;moved=false;startX=e.clientX;startY=e.clientY;card.setPointerCapture(e.pointerId);
 });
 card.addEventListener("pointermove",e=>{
   if(!dragging)return;
-  const dx=e.clientX-startX, dy=e.clientY-startY;
+  const dx=e.clientX-startX,dy=e.clientY-startY;
   if(Math.abs(dx)>8)moved=true;
-  if(Math.abs(dx)>Math.abs(dy)){card.style.transition="none";card.style.transform=`translateX(${dx*.18}px) rotateY(${-dx*.04}deg)`;}
+  if(Math.abs(dx)>Math.abs(dy)){card.style.transition="none";card.style.transform=`translateX(${dx*.18}px) rotateY(${-dx*.04}deg)`}
 });
 card.addEventListener("pointerup",e=>{
-  if(!dragging)return; dragging=false;
-  const dx=e.clientX-startX;
-  card.style.transition="transform .18s ease";
-  if(Math.abs(dx)>60) turn(dx<0?1:-1);
-  else {card.style.transform="translateX(0) rotateY(0)"; if(!moved)showAnswer();}
+  if(!dragging)return;dragging=false;
+  const dx=e.clientX-startX;card.style.transition="transform .18s ease";
+  if(Math.abs(dx)>60)turn(dx<0?1:-1);
+  else{card.style.transform="translateX(0) rotateY(0)";if(!moved)showAnswer()}
 });
+
 document.getElementById("answerBtn").onclick=showAnswer;
+learnBtn.onclick=()=>{
+  learned[i]=!learned[i];
+  localStorage.setItem("easyVocabLearned",JSON.stringify(learned));
+  render();
+};
 document.getElementById("prev").onclick=()=>go(i-1);
 document.getElementById("next").onclick=()=>go(i+1);
 document.getElementById("restart").onclick=()=>{done.style.display="none";go(0)};
+
+const settings=document.getElementById("settings"),learnSwitch=document.getElementById("learnSwitch"),scoreSwitch=document.getElementById("scoreSwitch");
+function updateSwitches(){
+  learnSwitch.classList.toggle("on",showLearn);
+  scoreSwitch.classList.toggle("on",showScore);
+}
+document.getElementById("settingsBtn").onclick=()=>{settings.style.display="flex";updateSwitches()};
+document.getElementById("closeSettings").onclick=()=>settings.style.display="none";
+settings.addEventListener("click",e=>{if(e.target===settings)settings.style.display="none"});
+learnSwitch.onclick=()=>{
+  showLearn=!showLearn;localStorage.setItem("easyVocabShowLearn",showLearn);updateSwitches();render();
+};
+scoreSwitch.onclick=()=>{
+  showScore=!showScore;localStorage.setItem("easyVocabShowScore",showScore);updateSwitches();
+};
+
 render();
+updateSwitches();
 </script>
 </body>
 </html>

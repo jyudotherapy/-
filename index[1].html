@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>やさしい英単語帳 S・Aランク</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eef6fb;color:#18324a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{height:58px;background:#fff;border-bottom:1px solid #dbe7ef;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+h1{font-size:18px;margin:0}.icon{border:0;background:none;font-size:22px}.rank-selector{max-width:560px;margin:14px auto 0;padding:0 16px;display:flex;gap:10px}
+.rank-selector button{flex:1;border:1px solid #d8e4ec;background:#fff;color:#486579;border-radius:12px;padding:12px;font-size:16px;font-weight:700}
+.rank-selector button.active{background:#4a90e2;color:#fff;border-color:#4a90e2}
+main{max-width:560px;margin:auto;padding:18px 16px}.progress{text-align:center;color:#668096;font-size:14px;margin-bottom:10px}
+.card{background:#fff;border-radius:22px;min-height:310px;padding:35px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 5px 18px #00000012;touch-action:pan-y;user-select:none}
+.rank{font-size:13px;color:#4a90e2;margin-bottom:18px}.word{font-size:42px;font-weight:700}.answer{font-size:24px;color:#2d638f;margin-top:22px;min-height:34px}
+.hint{font-size:13px;color:#8297a8;margin-top:24px}.actions{display:flex;gap:10px;margin-top:16px}
+.actions button,.nav button,.sets button{border:0;border-radius:12px;padding:10px 16px;cursor:pointer}
+.answerBtn{background:#4a90e2;color:#fff}.learnBtn{background:#55b97a;color:#fff}.learnBtn.off{background:#e7eef3;color:#587083}
+.nav{display:flex;justify-content:space-between;margin-top:15px}.nav button{background:#fff;border:1px solid #d8e4ec;color:#23465e}
+.sets{display:flex;gap:7px;justify-content:center;margin-top:14px;flex-wrap:wrap}.sets button{background:#fff;border:1px solid #d8e4ec;color:#486579}
+.sets .active{background:#4a90e2;color:#fff;border-color:#4a90e2}.panel,.complete{background:#fff;border-radius:18px;padding:20px;margin-top:15px}
+.panel{display:none}.panel.show{display:block}.complete{display:none;text-align:center}.complete.show{display:block}
+.row{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid #edf1f4}
+.switch{width:48px;height:28px;border:0;border-radius:20px;background:#cbd7df;position:relative}.switch:after{content:"";position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.2s}.switch.on{background:#55b97a}.switch.on:after{left:23px}
+.small{font-size:13px;color:#7890a0}
+</style></head>
+<body>
+<header><h1>やさしい英単語帳</h1><button class="icon" id="settingsBtn">⚙️</button></header>
+<div class="rank-selector"><button id="sRankBtn">Sランク</button><button id="aRankBtn">Aランク</button></div>
+<main>
+<div id="study"><div class="progress" id="progress"></div>
+<div class="card" id="card"><div class="rank" id="rank"></div><div class="word" id="word"></div><div class="answer" id="answer"></div><div class="hint">タップで日本語を表示</div></div>
+<div class="actions"><button class="answerBtn" id="answerBtn">日本語を見る</button><button class="learnBtn" id="learnBtn">覚えた</button></div>
+<div class="nav"><button id="prev">← 前へ</button><button id="next">次へ →</button></div><div class="sets" id="sets"></div></div>
+<div class="complete" id="complete"><h2>よくできました！</h2><p>このセットは終了です。</p><p id="result"></p><button class="answerBtn" id="again">もう一度</button></div>
+<div class="panel" id="settings"><h3>設定</h3>
+<div class="row"><span>「覚えた」ボタン</span><button class="switch" id="learnSwitch"></button></div>
+<div class="row"><span>正解率・点数を表示</span><button class="switch" id="scoreSwitch"></button></div>
+<p class="small">設定はこの端末に保存されます。</p></div>
+</main>
+<script>
+const data={S:[[["I", "私"], ["you", "あなた・あなたたち"], ["he", "彼"], ["she", "彼女"], ["it", "それ"], ["we", "私たち"], ["they", "彼ら・彼女ら"], ["my", "私の"], ["your", "あなたの"], ["his", "彼の"], ["her", "彼女の・彼女を"], ["this", "これ・この"], ["that", "あれ・その"], ["what", "何・何の"], ["who", "誰"], ["where", "どこ"], ["when", "いつ"], ["how", "どのように・どうやって"], ["am", "〜です・いる"], ["is", "〜です・いる"], ["are", "〜です・いる"], ["have", "持っている・ある"], ["like", "好き"], ["go", "行く"], ["come", "来る"]], [["do", "する"], ["does", "する"], ["can", "できる"], ["want", "欲しい・〜したい"], ["know", "知っている"], ["see", "見る・見える"], ["look", "見る・見える"], ["watch", "見る"], ["make", "作る"], ["use", "使う"], ["get", "得る・手に入れる"], ["give", "与える"], ["take", "取る・持っていく"], ["say", "言う"], ["tell", "伝える・話す"], ["speak", "話す"], ["talk", "話す"], ["read", "読む"], ["write", "書く"], ["listen", "聞く"], ["hear", "聞こえる"], ["eat", "食べる"], ["drink", "飲む"], ["play", "遊ぶ・する"], ["study", "勉強する"]], [["learn", "学ぶ"], ["live", "住む・生きる"], ["work", "働く・仕事をする"], ["help", "助ける"], ["need", "必要とする"], ["love", "大好き・愛する"], ["open", "開ける・開く"], ["close", "閉める・閉じる"], ["put", "置く"], ["bring", "持ってくる"], ["buy", "買う"], ["find", "見つける"], ["show", "見せる"], ["ask", "たずねる・頼む"], ["meet", "会う"], ["start", "始める"], ["stop", "止める・やめる"], ["try", "試す"], ["understand", "理解する"], ["think", "考える・思う"], ["feel", "感じる"], ["good", "よい"], ["nice", "よい・すてきな"], ["big", "大きい"], ["small", "小さい"]], [["new", "新しい"], ["old", "古い・年をとった"], ["young", "若い"], ["happy", "幸せな・うれしい"], ["easy", "簡単な"], ["hard", "難しい・かたい"], ["hot", "暑い・熱い"], ["cold", "寒い・冷たい"], ["many", "たくさんの"], ["much", "たくさんの・多くの"], ["very", "とても"], ["really", "本当に"], ["always", "いつも"], ["often", "よく・しばしば"], ["and", "そして"], ["but", "しかし"], ["or", "または"], ["because", "なぜなら・〜なので"], ["not", "〜でない"], ["to", "〜へ・〜に"], ["from", "〜から"], ["in", "〜の中に・〜で"], ["on", "〜の上に・〜に"], ["at", "〜で・〜に"], ["with", "〜と・〜と一緒に"]]],A:[[["the", "その・その人"], ["a", "1つの・ある"], ["an", "1つの・ある"], ["these", "これらの"], ["those", "あれらの"], ["which", "どちら・どの"], ["whose", "誰の"], ["why", "なぜ"], ["was", "〜でした・いた"], ["were", "〜でした・いた"], ["has", "持っている・ある"], ["had", "持っていた・あった"], ["did", "した"], ["will", "〜するでしょう"], ["would", "〜だろう"], ["should", "〜すべきだ"], ["must", "〜しなければならない"], ["may", "〜かもしれない"], ["let", "〜させる"], ["call", "呼ぶ・電話する"], ["keep", "保つ・続ける"], ["move", "動く・動かす"], ["run", "走る"], ["walk", "歩く"], ["leave", "去る・出発する"]], [["arrive", "到着する"], ["stay", "滞在する・いる"], ["sit", "座る"], ["stand", "立つ"], ["sleep", "眠る"], ["wake", "目を覚ます"], ["wash", "洗う"], ["clean", "きれいにする・掃除する"], ["cook", "料理する"], ["draw", "描く"], ["sing", "歌う"], ["dance", "踊る"], ["swim", "泳ぐ"], ["drive", "運転する"], ["ride", "乗る"], ["travel", "旅行する"], ["visit", "訪れる"], ["begin", "始める"], ["finish", "終える"], ["remember", "覚えている"], ["forget", "忘れる"], ["teach", "教える"], ["practice", "練習する"], ["answer", "答える・答え"], ["question", "質問・問題"]], [["wait", "待つ"], ["hope", "望む"], ["wish", "願う"], ["plan", "計画する・計画"], ["decide", "決める"], ["choose", "選ぶ"], ["enjoy", "楽しむ"], ["hate", "嫌う"], ["win", "勝つ"], ["beautiful", "美しい"], ["interesting", "興味深い"], ["important", "重要な"], ["different", "違った・異なる"], ["same", "同じ"], ["famous", "有名な"], ["popular", "人気のある"], ["special", "特別な"], ["kind", "親切な・種類"], ["busy", "忙しい"], ["free", "自由な・無料の"], ["early", "早い・早く"], ["late", "遅い・遅く"], ["fast", "速い・速く"], ["slow", "遅い・ゆっくりした"], ["high", "高い"]], [["low", "低い"], ["long", "長い"], ["short", "短い"], ["right", "正しい・右"], ["wrong", "間違った"], ["difficult", "難しい"], ["strong", "強い"], ["friend", "友達"], ["family", "家族"], ["father", "父"], ["mother", "母"], ["parent", "親"], ["brother", "兄・弟"], ["sister", "姉・妹"], ["son", "息子"], ["daughter", "娘"], ["teacher", "先生"], ["student", "生徒・学生"], ["class", "クラス・授業"], ["lesson", "授業・レッスン"], ["subject", "教科"], ["room", "部屋"], ["place", "場所"], ["town", "町"], ["city", "都市"]], [["country", "国"], ["world", "世界"], ["people", "人々"], ["person", "人"], ["child", "子ども"], ["children", "子どもたち"], ["time", "時間・時"], ["day", "日"], ["week", "週"], ["month", "月"], ["year", "年"], ["morning", "朝"], ["afternoon", "午後"], ["evening", "夕方・晩"], ["night", "夜"], ["today", "今日"], ["tomorrow", "明日"], ["yesterday", "昨日"], ["weekend", "週末"], ["Monday", "月曜日"], ["Sunday", "日曜日"], ["food", "食べ物"], ["water", "水"], ["music", "音楽"], ["movie", "映画"]], [["book", "本"], ["picture", "写真・絵"], ["game", "ゲーム・試合"], ["sport", "スポーツ"], ["soccer", "サッカー"], ["every", "すべての・毎〜"], ["each", "それぞれの"], ["another", "もう一つの・別の"], ["both", "両方の"], ["only", "ただ〜だけ"], ["also", "〜もまた"], ["too", "〜も"], ["just", "ちょうど・ただ〜"], ["before", "〜の前に"], ["after", "〜の後に"], ["during", "〜の間に"], ["around", "〜の周りに・約"], ["under", "〜の下に"], ["over", "〜の上に・〜を越えて"], ["near", "〜の近くに"], ["between", "〜の間に"], ["first", "最初の・第一の"], ["last", "最後の・この前の"], ["next", "次の"], ["best", "最高の・最もよい"]]]};
+let rankType=localStorage.getItem("rankType")||"S",si=0,wi=0,revealed=false;
+let showLearn=localStorage.getItem("showLearn")!=="false",showScore=localStorage.getItem("showScore")==="true";
+let learned=JSON.parse(localStorage.getItem("learned")||"{}");
+const $=x=>document.getElementById(x);
+function sets(){return data[rankType]}
+function key(){return rankType+"-"+si+"-"+wi}
+function render(){
+ let ss=sets(),x=ss[si][wi];
+ $("progress").textContent=`${rankType}ランク セット${si+1}　${wi+1} / 25`;
+ $("rank").textContent=`${rankType}ランク ${si*25+wi+1} / ${rankType==="S"?100:150}`;
+ $("word").textContent=x[0];$("answer").textContent=revealed?x[1]:"";
+ $("answerBtn").textContent=revealed?"日本語を隠す":"日本語を見る";
+ $("learnBtn").style.display=showLearn?"inline-block":"none";
+ $("learnBtn").textContent=learned[key()]?"✓ 覚えた":"覚えた";
+ $("learnBtn").className="learnBtn"+(learned[key()]?"":" off");
+ $("sets").innerHTML=ss.map((_,i)=>`<button class="${i===si?'active':''}" onclick="changeSet(${i})">セット${i+1}</button>`).join("");
+ $("sRankBtn").className=rankType==="S"?"active":"";
+ $("aRankBtn").className=rankType==="A"?"active":"";
+}
+function changeSet(i){si=i;wi=0;revealed=false;$("complete").classList.remove("show");$("study").style.display="block";render()}
+function changeRank(r){rankType=r;localStorage.setItem("rankType",r);si=0;wi=0;revealed=false;$("complete").classList.remove("show");$("study").style.display="block";render()}
+$("sRankBtn").onclick=()=>changeRank("S");$("aRankBtn").onclick=()=>changeRank("A");
+$("answerBtn").onclick=()=>{revealed=!revealed;render()};
+$("learnBtn").onclick=()=>{learned[key()]=!learned[key()];localStorage.setItem("learned",JSON.stringify(learned));render()};
+$("prev").onclick=()=>{if(wi>0){wi--;revealed=false;render()}};
+$("next").onclick=()=>{if(wi<24){wi++;revealed=false;render()}else{$("study").style.display="none";$("complete").classList.add("show");let n=sets()[si].filter((_,i)=>learned[rankType+"-"+si+"-"+i]).length;$("result").textContent=showScore?n+" / 25語 覚えた":"おつかれさまでした。"}};
+$("again").onclick=()=>changeSet(si);
+$("settingsBtn").onclick=()=>$("settings").classList.toggle("show");
+function sw(){$("learnSwitch").className="switch"+(showLearn?" on":"");$("scoreSwitch").className="switch"+(showScore?" on":"")}
+$("learnSwitch").onclick=()=>{showLearn=!showLearn;localStorage.setItem("showLearn",showLearn);sw();render()};
+$("scoreSwitch").onclick=()=>{showScore=!showScore;localStorage.setItem("showScore",showScore);sw()};
+let sx=0;$("card").ontouchstart=e=>sx=e.changedTouches[0].screenX;
+$("card").ontouchend=e=>{let d=e.changedTouches[0].screenX-sx;if(Math.abs(d)>60)(d<0?$("next"):$("prev")).click();else $("answerBtn").click()};
+sw();render();
+</script></body></html>
